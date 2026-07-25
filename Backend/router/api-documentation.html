@@ -1,0 +1,3132 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เอกสารการเชื่อมต่อ API - Capstone Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --cyan: #06b6d4;
+            --purple: #a78bfa;
+            --code-bg: #0b0f19;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Sarabun', sans-serif;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: .25rem;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: .95rem;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat .num {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .stat .label {
+            font-size: .8rem;
+            color: var(--muted);
+            margin-top: .25rem;
+            font-weight: 600;
+        }
+
+        /* Search & Filter Component */
+        .filter-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+
+        /* API Card / Section */
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            padding-bottom: .75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            color: #60a5fa;
+        }
+
+        /* API Route Items */
+        .api-item {
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.3);
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .api-item:hover {
+            border-color: var(--muted);
+        }
+
+        .api-header {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            cursor: pointer;
+            user-select: none;
+            flex-wrap: wrap;
+        }
+
+        .api-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .method {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            min-width: 65px;
+            text-align: center;
+        }
+
+        .GET { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .POST { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .PATCH { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .DELETE { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .path {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .copy-path-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            opacity: 0.2;
+        }
+
+        .api-item:hover .copy-path-btn {
+            opacity: 0.7;
+        }
+
+        .copy-path-btn:hover {
+            color: var(--blue);
+            background: rgba(59, 130, 246, 0.1);
+            opacity: 1 !important;
+            transform: scale(1.15);
+        }
+
+        .copy-path-btn.copied {
+            color: var(--green);
+            background: rgba(16, 185, 129, 0.1);
+            opacity: 1 !important;
+        }
+
+        .description {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .auth-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 100px;
+        }
+
+        .auth-required {
+            background: rgba(167, 139, 250, 0.15);
+            color: var(--purple);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .auth-public {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--muted);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        /* API Details Panel */
+        .api-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: var(--code-bg);
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .api-details.open {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .details-content {
+            padding: 1.2rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .param-table th, .param-table td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .param-table th {
+            color: var(--muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .param-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #93c5fd;
+        }
+
+        .param-type {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .code-block-container {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+        }
+
+        pre {
+            background: #080c14;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            margin-top: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .doc-section-header {
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>คู่มือและโครงสร้างโปรโตคอล API</h1>
+        <p class="sub">โครงการระบบจดบันทึกมาตรวัดน้ำประปาและจัดการค่าธรรมเนียมสุขาภิบาล (Capstone Project)</p>
+
+        <!-- A. Stats Row -->
+        <div class="stats">
+            <div class="stat">
+                <div class="num" style="color: var(--purple);">52</div>
+                <div class="label">เส้นทาง API ทั้งหมด</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color: var(--green);">25</div>
+                <div class="label">GET (ดึงข้อมูล)</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color: var(--blue);">15</div>
+                <div class="label">POST (เพิ่มข้อมูล/ธุรกรรม)</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color: var(--yellow);">7</div>
+                <div class="label">PATCH (ปรับปรุงข้อมูล)</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color: var(--red);">5</div>
+                <div class="label">DELETE (ลบข้อมูล)</div>
+            </div>
+        </div>
+
+        <!-- B. Search & Filter Tool -->
+        <div class="filter-section">
+            <input type="text" id="search" class="search-box" placeholder="ค้นหาตามชื่อ URL, วิธีการ (GET/POST) หรือคำอธิบาย..." onkeyup="filterRoutes()">
+            <button class="filter-btn active" onclick="filterCategory('all', this)">ทั้งหมด</button>
+            <button class="filter-btn" onclick="filterCategory('public', this)">สาธารณะ (No Auth)</button>
+            <button class="filter-btn" onclick="filterCategory('mobile', this)">มือถือ (Mobile Staff)</button>
+            <button class="filter-btn" onclick="filterCategory('web', this)">เว็บ (Admin/Staff)</button>
+        </div>
+
+        <!-- C. Route Lists -->
+        <!-- Category 1: Public Routes -->
+        <div class="section route-category" data-cat="public">
+            <h2>🔑 Authentication & Webhooks (สาธารณะ)</h2>
+            
+        <!-- Route: /api/login [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/login</span>
+                    <span class="description">เข้าสู่ระบบสำหรับเจ้าหน้าที่ระดับเว็บ (Admin / Staff)</span>
+                </div>
+                <span class="auth-badge auth-public">PUBLIC</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ตรวจสอบสิทธิ์ผู้ใช้งานฝั่งเว็บ หากเข้าสู่ระบบสำเร็จจะได้รับ JWT Token ที่มีอายุ 1 ชั่วโมง (กำหนดผ่าน .env) บัญชีระดับ `field_staff` จะถูกปฏิเสธสิทธิ์ในขั้นตอนนี้</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "username": "admin1",
+  "password": "123"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "token": "...",
+  "role": "admin",
+  "username": "admin1"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobilelogin [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/mobilelogin</span>
+                    <span class="description">เข้าสู่ระบบสำหรับเจ้าหน้าที่สนาม (Field Staff)</span>
+                </div>
+                <span class="auth-badge auth-public">PUBLIC</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ตรวจสอบสิทธิ์ผู้ใช้งานฝั่งแอปพลิเคชันมือถือ (Field Staff เท่านั้น)</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "username": "field1",
+  "password": "123"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "token": "...",
+  "role": "field_staff",
+  "username": "field1"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/payments/webhook [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/payments/webhook</span>
+                    <span class="description">Webhook รับเหตุการณ์ชำระเงินสำเร็จจาก Omise (PromptPay)</span>
+                </div>
+                <span class="auth-badge auth-public">PUBLIC</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>รับข้อมูลการชำระเงินที่เปลี่ยนสถานะจาก Omise Payment Gateway เมื่อประชาชนชำระผ่าน PromptPay สำเร็จ ระบบจะอัปเดตบิลค่าบริการเป็นจ่ายแล้วโดยอัตโนมัติ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Headers</div>
+                    <pre>{
+  "Content-Type": "application/json",
+  "Comment": "ส่งอัตโนมัติจากเซิร์ฟเวอร์ Omise"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "status": "success",
+  "message": "payment status updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        </div>
+
+        <!-- Category 2: Mobile Routes -->
+        <div class="section route-category" data-cat="mobile">
+            <h2>📱 Mobile Application API (เฉพาะเจ้าหน้าที่สนาม)</h2>
+            <p style="color: var(--muted); font-size: 0.8rem; margin-top: -0.8rem; margin-bottom: 1.2rem;">จำเป็นต้องแนบ Header: <code style="font-family: 'JetBrains Mono', monospace; color: var(--purple);">Authorization: Bearer &lt;Token&gt;</code> ในทุกคำร้อง</p>
+            
+        <!-- Route: /api/mobile/households [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/mobile/households</span>
+                    <span class="description">ดึงรายชื่อครัวเรือนเพื่อทำงานบันทึกข้อมูลหน้างาน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงรายชื่อครัวเรือนจำแนกตามหมู่บ้านที่ระบุ เพื่อให้เจ้าหน้าที่สนามเดินจดบันทึกค่ามิเตอร์น้ำประปาและประเมินถังขยะ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "village_id": 1
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 12,
+    "house_no": "125/4",
+    "owner_name": "สมศักดิ์ รักษ์ดี",
+    "water_status": "active",
+    "garbage_status": "active",
+    "last_water_reading": 345
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/households/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/households/:id</span>
+                    <span class="description">ดึงข้อมูลรายละเอียดของครัวเรือนรายหลังตามรหัส ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงรายละเอียดข้อมูลครัวเรือนและค่าน้ำประปารอบที่บันทึกล่าสุดเพื่อแสดงรายละเอียดในเชิงลึกบนแอปพลิเคชันมือถือ</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 12,
+  "village_id": 1,
+  "house_number": "125/4",
+  "house_code": "V01-0012",
+  "title_name": "นาย",
+  "first_name": "สมศักดิ์",
+  "last_name": "รักษ์ดี",
+  "citizen_id": "1200900088776",
+  "phone_number": "0812345678",
+  "water_user_id": "W-0012",
+  "water_status": "active",
+  "garbage_status": "active",
+  "is_water_recorded": false,
+  "is_garbage_recorded": true,
+  "prev_reading": 345,
+  "garbage_size_id": 1
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/villages [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/villages</span>
+                    <span class="description">ดึงข้อมูลรายชื่อหมู่บ้านทั้งหมดในตำบลที่เจ้าหน้าที่รับผิดชอบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ใช้สำหรับเตรียมแสดงเมนูตัวเลือกหมู่บ้านบนแอปพลิเคชันมือถือ เพื่อให้เจ้าหน้าที่สนามระบุขอบเขตในการเดินจดมิเตอร์น้ำประปาหรือเช็คการเก็บถังขยะ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "name": "หมู่ 1 บ้านใหม่"
+  },
+  {
+    "id": 2,
+    "name": "หมู่ 2 บ้านดอน"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/profile [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/profile</span>
+                    <span class="description">ดึงข้อมูลโปรไฟล์ของเจ้าหน้าที่สนามที่กำลังเข้าสู่ระบบอยู่</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงรายละเอียดประวัติข้อมูลส่วนตัวของเจ้าหน้าที่ที่กำลังล็อกอินในโมบายแอปพลิเคชัน โดยถอดสิทธิ์ผ่าน JWT Claims Token</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 2,
+  "user_id": 10,
+  "username": "field1",
+  "role": "field_staff",
+  "status": "active",
+  "title_name": "นาย",
+  "first_name": "สนาม",
+  "last_name": "เก่งกาจ",
+  "phone_number": "0899998888"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/invoices/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/invoices/:id</span>
+                    <span class="description">ดึงรายละเอียดใบแจ้งหนี้เพื่อตรวจสอบประวัติการใช้น้ำ/ค่าขยะ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลประวัติใบแจ้งหนี้ของครัวเรือนแบบเจาะลึก นำไปแสดงผลในหน้าตรวจสอบการชำระเงินหรือสถานะของบิลค้างจ่าย</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของใบแจ้งหนี้</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 98,
+  "house_hold_id": 12,
+  "invoice_number": "INV-202606-0098",
+  "water_amount": 120,
+  "garbage_amount": 30,
+  "total_amount": 150,
+  "status": "unpaid",
+  "created_at": "2026-06-01T00:00:00Z"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/receipts/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/receipts/:id</span>
+                    <span class="description">ดึงรายละเอียดใบเสร็จรับเงินมาแสดงผลผ่านมือถือ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลใบเสร็จรับเงิน (บิลชำระเงินเรียบร้อย) ของครัวเรือนเพื่อยืนยันประวัติการทำธุรกรรมสำเร็จ โดยแนบรายละเอียดช่องทางจ่ายเงิน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของบิล/ใบแจ้งหนี้</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 54,
+  "invoice_id": 98,
+  "receipt_number": "REC-202606-0054",
+  "amount": 150,
+  "payment_method": "promptpay",
+  "payment_date": "2026-06-02T15:30:22Z"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/water-readings [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/mobile/water-readings</span>
+                    <span class="description">จดบันทึกเลขมาตรวัดน้ำประปาพร้อมรูปภาพอ้างอิง</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>บันทึกประวัติค่าหน่วยน้ำดิบล่าสุดของครัวเรือน ระบบจะนำไปคำนวณขั้นบันไดอัตราค่าน้ำประปาของตำบล และออกใบแจ้งหนี้ (Invoice) ทันที</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "house_hold_id": 12,
+  "reading_value": 358,
+  "image_url": "https://bucket-name.s3.amazonaws.com/meter-readings/meter-12.jpg"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Water reading created successfully",
+  "invoice_id": 98,
+  "calculated_amount": 130
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/garbage-readings [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/mobile/garbage-readings</span>
+                    <span class="description">บันทึกการจัดเก็บขยะของครัวเรือนประจำเดือน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>เช็คประวัติและบันทึกการเคลียร์ถังขยะหรือการชำระค่าธรรมเนียมขยะรายเดือนของแต่ละบ้าน</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "house_hold_id": 12,
+  "collected": true,
+  "notes": "เก็บขยะถังใหญ่ตามปกติ"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Garbage collection recorded successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/mobile/garbage-rates [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/mobile/garbage-rates</span>
+                    <span class="description">ดึงข้อมูลอัตราค่าบริการสุขาภิบาลขยะทั้งหมดสำหรับแสดงบนแอป</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลรายการเรทอัตราค่าขยะ (จำแนกตามขนาดถังและค่าบริการ) ที่กำหนดใช้ในเขตตำบลสำหรับแสดงข้อมูลเพื่อตรวจสอบราคาบนมือถือ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "subdistrict_id": 1,
+    "size_name": "ถังขนาดเล็ก 40 ลิตร",
+    "cost": 20
+  },
+  {
+    "id": 2,
+    "subdistrict_id": 1,
+    "size_name": "ถังขนาดกลาง 100 ลิตร",
+    "cost": 40
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        </div>
+
+        <!-- Category 3: Web Admin Routes -->
+        <div class="section route-category" data-cat="web">
+            <h2>💻 Web Administrative API (ผู้ดูแลระบบและเจ้าหน้าที่ในสำนักงาน)</h2>
+            <p style="color: var(--muted); font-size: 0.8rem; margin-top: -0.8rem; margin-bottom: 1.2rem;">จำเป็นต้องแนบ Header: <code style="font-family: 'JetBrains Mono', monospace; color: var(--purple);">Authorization: Bearer &lt;Token&gt;</code> ในทุกคำร้อง</p>
+            
+        <!-- Route: /api/dashboard/stats [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/dashboard/stats</span>
+                    <span class="description">ดึงสถิติสรุปภาพรวมแดชบอร์ดรายตำบล (ยอดรวมรายได้, ครัวเรือน, ความคืบหน้า)</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ประมวลผลข้อมูลสดจากฐานข้อมูลเฉพาะของตำบลตามโทเค็นสิทธิ์ เช่น จำนวนครัวเรือนที่ Active, ยอดชำระจริง, และอัตราสัดส่วนเทียบเป้าหมาย</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "revenue": "452000",
+  "householdsActive": "2450",
+  "householdsTotal": "2500",
+  "pendingTasks": 18,
+  "systemAlerts": 5,
+  "waterProgress": {
+    "percentage": 85,
+    "target": 200000,
+    "collected": 170000
+  },
+  "garbageProgress": {
+    "percentage": 75,
+    "target": 150000,
+    "collected": 112500
+  },
+  "chartData": [
+    {
+      "month": "May",
+      "water": 58,
+      "garbage": 43
+    }
+  ]
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/villages</span>
+                    <span class="description">ดึงรายชื่อหมู่บ้านทั้งหมดในระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ใช้สำหรับดึงข้อมูลสรุปของหมู่บ้านและเจ้าหน้าที่หัวหน้าหมู่บ้านมาจัดทำตารางสรุปในหน้าแดชบอร์ดหลัก</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "village_name": "หมู่ที่ 1 บ้านใหม่",
+    "village_number": 1,
+    "subdistrict_id": 1,
+    "subdistrict_name": "ตำบลในเมือง",
+    "title_name": "นาย",
+    "headman_firstname": "สมพร",
+    "headman_lastname": "ประเสริฐ",
+    "number_house": 150,
+    "headman_phone_number": "0812345678"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/villages/:id</span>
+                    <span class="description">ดึงข้อมูลรายละเอียดของหมู่บ้านเฉพาะรหัส ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>แสดงรายละเอียดเชิงลึกของหมู่บ้านและข้อมูลผู้ใหญ่บ้านตามรหัส ID เพื่อฟอร์มแก้ไขหรือจัดการข้อมูลเฉพาะกลุ่ม</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของหมู่บ้าน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 1,
+  "village_name": "หมู่ที่ 1 บ้านใหม่",
+  "village_number": 1,
+  "subdistrict_id": 1,
+  "title_name": "นาย",
+  "headman_firstname": "สมพร",
+  "headman_lastname": "ประเสริฐ",
+  "number_house": 150,
+  "headman_phone_number": "0812345678"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/villages</span>
+                    <span class="description">ลงทะเบียนหมู่บ้านใหม่เข้าสู่ฐานข้อมูล</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ใช้เพื่อสร้างและแบ่งเขตโซนพื้นที่การจัดเก็บภาษีและค่าบำรุงรักษาในตำบล</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "subdistrict_id": 1,
+  "village_name": "หมู่ที่ 11 บ้านทุ่งสว่าง",
+  "village_number": 11,
+  "title_name": "นาย",
+  "headman_firstname": "ไพโรจน์",
+  "headman_lastname": "ทองดี",
+  "number_house": 80,
+  "headman_phone_number": "0898877665"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 11,
+  "village_name": "หมู่ที่ 11 บ้านทุ่งสว่าง",
+  "village_number": 11,
+  "subdistrict_id": 1,
+  "title_name": "นาย",
+  "headman_firstname": "ไพโรจน์",
+  "headman_lastname": "ทองดี",
+  "number_house": 80,
+  "headman_phone_number": "0898877665"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/villages/:id</span>
+                    <span class="description">แก้ไขรายละเอียดข้อมูลของหมู่บ้านตามรหัส ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>อัปเดตข้อมูลรายละเอียดของหมู่บ้านและเบอร์ติดต่อผู้ใหญ่บ้าน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัสไอดีของหมู่บ้าน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "village_name": "หมู่ที่ 11 บ้านทุ่งสว่างใหม่",
+  "headman_phone_number": "0897766554"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Village updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages/:id [DELETE] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="path">/api/villages/:id</span>
+                    <span class="description">ลบหมู่บ้านออกจากระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ลบข้อมูลหมู่บ้านที่ระบุตาม ID (ระมัดระวังเนื่องจากอาจติดความสัมพันธ์กับครัวเรือนในหมู่บ้าน)</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของหมู่บ้าน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Village deleted successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/villages/:id/households [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/villages/:id/households</span>
+                    <span class="description">ดึงรายชื่อครัวเรือนทั้งหมดในหมู่บ้านนั้นๆ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลครัวเรือนทั้งหมดเพื่อนำไปคัดกรองหรือจัดการข้อมูลครัวเรือนจำแนกตามกลุ่มรายพื้นที่หมู่บ้าน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของหมู่บ้าน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 12,
+    "village_id": 1,
+    "house_number": "125/4",
+    "house_code": "V01-0012",
+    "owner_name": "สมศักดิ์ รักษ์ดี",
+    "water_status": "active"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households</span>
+                    <span class="description">ดึงข้อมูลรายชื่อครัวเรือนทั้งหมดในระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงรายการที่อยู่อาศัยทั้งหมดของหน่วยงานมาแสดงผลบนตารางจัดการครัวเรือนพร้อมสถานะการจดค่าน้ำ/ค่าขยะ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 12,
+    "village_id": 1,
+    "house_number": "125/4",
+    "house_code": "V01-0012",
+    "title_name": "นาย",
+    "first_name": "สมศักดิ์",
+    "last_name": "รักษ์ดี",
+    "water_status": "active",
+    "garbage_status": "active"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households/:id</span>
+                    <span class="description">ดึงรายละเอียดข้อมูลครัวเรือนเฉพาะ ID ที่กำหนด</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>แสดงประวัติข้อมูลเชิงลึกของครัวเรือนเพื่อตรวจสอบสิทธิ์และการชำระเงิน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 12,
+  "village_id": 1,
+  "house_number": "125/4",
+  "house_code": "V01-0012",
+  "title_name": "นาย",
+  "first_name": "สมศักดิ์",
+  "last_name": "รักษ์ดี",
+  "citizen_id": "1200900088776",
+  "phone_number": "0812345678",
+  "water_user_id": "W-0012",
+  "water_status": "active",
+  "garbage_status": "active",
+  "prev_reading": 345,
+  "garbage_size_id": 1
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/households</span>
+                    <span class="description">ลงทะเบียนเลขครัวเรือนและเจ้าของสิทธิ์ค่าน้ำ/ค่าขยะรายใหม่</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>บันทึกที่อยู่ เบอร์โทรศัพท์ และเปิด/ปิดสิทธิ์การจ่ายค่าน้ำประปา หรือค่าบริหารขยะ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "village_id": 1,
+  "house_number": "199/99 ม.1",
+  "house_code": "V01-0045",
+  "title_name": "นาย",
+  "first_name": "สมโภช",
+  "last_name": "รักดี",
+  "citizen_id": "3100200998877",
+  "phone_number": "0812345678",
+  "water_user_id": "W-0045",
+  "prev_reading": 0,
+  "staff_id": 1,
+  "water_status": "active",
+  "garbage_status": "active",
+  "garbage_size_id": 1
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 45,
+  "village_id": 1,
+  "house_number": "199/99 ม.1",
+  "house_code": "V01-0045",
+  "title_name": "นาย",
+  "first_name": "สมโภช",
+  "last_name": "รักดี",
+  "water_status": "active",
+  "garbage_status": "active"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/households/:id</span>
+                    <span class="description">แก้ไขรายละเอียดข้อมูลของครัวเรือน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ปรับปรุงรายละเอียดที่อยู่ ชื่อเจ้าของ สิทธิ์การใช้น้ำประปา หรือสิทธิ์ค่าบริการขยะ</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "first_name": "สมโภชใหม่",
+  "phone_number": "0811119999",
+  "water_status": "inactive"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Household updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id [DELETE] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="path">/api/households/:id</span>
+                    <span class="description">ลบข้อมูลครัวเรือนออกจากระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ลบข้อมูลครัวเรือนตามรหัส ID</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Household deleted successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id/invoices [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households/:id/invoices</span>
+                    <span class="description">ดึงประวัติใบแจ้งหนี้ทั้งหมดของครัวเรือนนั้นๆ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงรายการใบแจ้งหนี้ทั้งหมดของครัวเรือนเพื่อแสดงประวัติการออกใบแจ้งหนี้ในระบบหลังบ้าน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 98,
+    "invoice_number": "INV-202606-0098",
+    "water_amount": 120,
+    "garbage_amount": 30,
+    "total_amount": 150,
+    "status": "unpaid"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id/payments [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households/:id/payments</span>
+                    <span class="description">ดึงประวัติการชำระเงินทั้งหมดของครัวเรือนนั้นๆ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ตรวจสอบประวัติประวัติบิลที่ทำการจ่ายเสร็จสิ้นเรียบร้อยแล้วของบ้านตาม ID</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 42,
+    "invoice_id": 98,
+    "amount": 150,
+    "payment_method": "cash",
+    "payment_date": "2026-06-03T10:00:00Z"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id/last-water-reading [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households/:id/last-water-reading</span>
+                    <span class="description">ดึงค่าน้ำบันทึกล่าสุดเพื่อนำมาคำนวณมิเตอร์</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงประวัติหน่วยจดบันทึกน้ำประปารอบที่ผ่านมาเพื่อเป็นข้อมูลอ้างอิงในการเริ่มบันทึกหน่วยครั้งถัดไป</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 201,
+  "reading_value": 345,
+  "reading_date": "2026-05-30T00:00:00Z"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/households/:id/last-garbage-reading [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/households/:id/last-garbage-reading</span>
+                    <span class="description">ดึงประวัติคีย์จัดเก็บขยะล่าสุดของครัวเรือน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>เช็คประวัติการเข้าไปเคลียร์ขยะและการออกบิลขยะรอบเดือนปัจจุบันของบ้านที่กำหนด</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 111,
+  "collected": true,
+  "created_at": "2026-05-28T09:12:00Z"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/household-profile/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/household-profile/:id</span>
+                    <span class="description">ปรับปรุงข้อมูลบัญชีโปรไฟล์ของผู้ใช้ครัวเรือน (แก้ไขเบอร์โทรศัพท์/รหัสผ่าน)</span>
+                </div>
+                <span class="auth-badge auth-public">PUBLIC</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ให้สิทธิ์เจ้าของบ้านล็อกอินเข้าแก้ไขเบอร์ติดต่อหรือตั้งรหัสผ่านใหม่ (ไม่มี middleware ในขั้นทดสอบจำลอง)</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของครัวเรือน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "phone_number": "0812345678",
+  "old_password": "oldpassword123",
+  "new_password": "newsecurepassword123"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Profile updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-readings [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/water-readings</span>
+                    <span class="description">คีย์บันทึกมาตรวัดน้ำประปาจากฝั่งเว็บแอดมิน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ให้ผู้ดูแลระบบที่ควบคุมบนหน้าจอเดสก์ท็อป สามารถคีย์หน่วยวัดน้ำเข้าระบบแทนการใช้โมบายแอปจดบันทึก</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "house_hold_id": 12,
+  "reading_value": 358,
+  "image_url": ""
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Water reading created successfully",
+  "invoice_id": 98,
+  "calculated_amount": 130
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-units [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/water-units</span>
+                    <span class="description">ดึงข้อมูลช่วงขั้นบันไดราคาน้ำประปาทั้งหมด</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงเรทโครงสร้างคำนวณภาษีน้ำและราคาน้ำประปาจำแนกตามปริมาณการใช้ตามช่วงขั้นบันได</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "subdistrict_id": 1,
+    "subdistrict_name": "ตำบลในเมือง",
+    "start_unit": 0,
+    "end_unit": 10,
+    "cost": 5
+  },
+  {
+    "id": 2,
+    "subdistrict_id": 1,
+    "subdistrict_name": "ตำบลในเมือง",
+    "start_unit": 11,
+    "end_unit": 20,
+    "cost": 7.5
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-units/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/water-units/:id</span>
+                    <span class="description">ดึงข้อมูลช่วงอัตราค่าน้ำประปาเฉพาะ ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>แสดงรายละเอียดของขั้นบันไดค่าน้ำเฉพาะช่วงเพื่อตรวจสอบและจัดการข้อมูล</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของอัตราค่าน้ำขั้นบันได</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 1,
+  "subdistrict_id": 1,
+  "start_unit": 0,
+  "end_unit": 10,
+  "cost": 5
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-units [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/water-units</span>
+                    <span class="description">กำหนดช่วงขั้นบันไดและราคาน้ำประปาเพิ่ม</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>กำหนดช่วงค่าน้ำขั้นต่ำ - สูงสุด และราคาต่อหน่วย (เช่น ช่วง 0-10 หน่วย ราคา 5 บาท)</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "subdistrict_id": 1,
+  "start_unit": 0,
+  "end_unit": 10,
+  "cost": 5
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 12,
+  "subdistrict_id": 1,
+  "start_unit": 0,
+  "end_unit": 10,
+  "cost": 5
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-units/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/water-units/:id</span>
+                    <span class="description">แก้ไขช่วงขั้นบันไดค่าน้ำประปาตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ปรับปรุงแก้ไขเงื่อนไขขอบเขตจำนวนหน่วยหรืออัตราต่อหน่วยในเขตพื้นที่</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของอัตราค่าน้ำขั้นบันได</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "cost": 6
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Water unit rate updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/water-units/:id [DELETE] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="path">/api/water-units/:id</span>
+                    <span class="description">ลบช่วงขั้นบันไดค่าน้ำประปาตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ลบเรทค่าน้ำขั้นบันไดเฉพาะรายการ</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของอัตราค่าน้ำขั้นบันได</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Water unit rate deleted successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-readings [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/garbage-readings</span>
+                    <span class="description">คีย์บันทึกประวัติการจัดเก็บขยะจากฝั่งเว็บแอดมิน</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>อนุญาตให้แอดมินฝั่งควบคุมในระบบเว็บ เข้าคีย์ประวัติเก็บถังขยะรายเดือนของลูกบ้านย้อนหลังได้</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "house_hold_id": 12,
+  "collected": true,
+  "notes": "จ่ายที่สำนักงาน"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Garbage reading created successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-rates [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/garbage-rates</span>
+                    <span class="description">ดึงอัตราค่าธรรมเนียมถังขยะและงานบริการขยะทั้งหมด</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงอัตราเรทค่าขยะรายเดือนทั้งหมดแยกตามประเภทหรือความจุของภาชนะ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "subdistrict_id": 1,
+    "subdistrict_name": "ตำบลในเมือง",
+    "size_name": "ถังขนาดเล็ก 40 ลิตร",
+    "cost": 20
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-rates/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/garbage-rates/:id</span>
+                    <span class="description">ดึงข้อมูลเรทอัตราค่าบริการสุขาภิบาลขยะเฉพาะ ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>เรียกรายละเอียดเรทค่าขยะจำเพาะสำหรับใช้ยืนยันในการปรับปรุงแก้ไข</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของเรทค่าเก็บขยะ</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 1,
+  "subdistrict_id": 1,
+  "size_name": "ถังขนาดเล็ก 40 ลิตร",
+  "cost": 20
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-rates [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/garbage-rates</span>
+                    <span class="description">สร้างเรทอัตราค่าขยะจำแนกตามประเภท/ขนาดถังใหม่</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>สร้างข้อกำหนดขนาดถังขยะและราคารายเดือนใหม่สำหรับตำบล</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "subdistrict_id": 1,
+  "size_name": "ถังขยะร้านค้าขนาดใหญ่ 200 ลิตร",
+  "cost": 100
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 5,
+  "subdistrict_id": 1,
+  "size_name": "ถังขยะร้านค้าขนาดใหญ่ 200 ลิตร",
+  "cost": 100
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-rates/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/garbage-rates/:id</span>
+                    <span class="description">แก้ไขรายละเอียดอัตราค่าขยะตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>อัปเดตราคาหรือขนาดขยะตามเงื่อนไขที่เปลี่ยนแปลง</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของเรทค่าเก็บขยะ</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "cost": 120
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Garbage rate updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/garbage-rates/:id [DELETE] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="path">/api/garbage-rates/:id</span>
+                    <span class="description">ลบอัตราค่าขยะตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>นำโครงสร้างขยะเฉพาะรายการออกจากระบบ</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของเรทค่าเก็บขยะ</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Garbage rate deleted successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/userstaffs [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/userstaffs</span>
+                    <span class="description">ดึงรายชื่อเจ้าหน้าที่และแอดมินทั้งหมดในตำบล</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงประวัติผู้ใช้ที่เป็นแอดมิน เจ้าหน้าที่การเงิน และเจ้าหน้าที่จดหน่วยบันทึกน้ำหน้างาน</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>[
+  {
+    "id": 1,
+    "user_id": 2,
+    "username": "staff_member",
+    "role": "staff",
+    "status": "active",
+    "title_name": "นาย",
+    "first_name": "เจริญ",
+    "last_name": "มุ่งมั่น",
+    "phone_number": "0897654321"
+  }
+]</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/userstaffs/:id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/userstaffs/:id</span>
+                    <span class="description">ดึงประวัติข้อมูลเจ้าหน้าที่รายบุคคลตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงประวัติข้อมูลรายละเอียดของเจ้าหน้าที่เฉพาะ ID ในตำบล</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของพนักงาน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 1,
+  "user_id": 2,
+  "username": "staff_member",
+  "role": "staff",
+  "status": "active",
+  "title_name": "นาย",
+  "first_name": "เจริญ",
+  "last_name": "มุ่งมั่น",
+  "phone_number": "0897654321"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/userstaffs [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/userstaffs</span>
+                    <span class="description">ลงทะเบียนข้อมูลพนักงานหรือแอดมินคนใหม่เข้าระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ลงทะเบียนพนักงานใหม่ และกำหนดสิทธิ์การเข้าใช้งานบทบาท เช่น admin, staff (เจ้าหน้าที่สำนักงาน) หรือ field_staff (เจ้าหน้าที่สนาม)</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "username": "staff_member",
+  "password": "securepassword",
+  "role": "staff",
+  "status": "active",
+  "title_name": "นาย",
+  "first_name": "เจริญ",
+  "last_name": "มุ่งมั่น",
+  "phone_number": "0897654321"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "id": 5,
+  "user_id": 12,
+  "username": "staff_member",
+  "role": "staff",
+  "status": "active",
+  "title_name": "นาย",
+  "first_name": "เจริญ",
+  "last_name": "มุ่งมั่น",
+  "phone_number": "0897654321"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/userstaffs/:id [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/userstaffs/:id</span>
+                    <span class="description">แก้ไขปรับปรุงสิทธิ์/ข้อมูลเจ้าหน้าที่ตาม ID</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>อัปเดตสิทธิ์ บทบาท รหัสผ่าน หรือเบอร์ติดต่อของพนักงานและเจ้าหน้าที่</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของพนักงาน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "role": "admin",
+  "phone_number": "0890001111"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "User staff updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/userstaffs/:id [DELETE] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="path">/api/userstaffs/:id</span>
+                    <span class="description">ลบเจ้าหน้าที่ออกจากฐานข้อมูลระบบ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ลบข้อมูลและบัญชีล็อกอินของพนักงาน/เจ้าหน้าที่</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของพนักงาน</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "User staff deleted successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/payments/cash [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/payments/cash</span>
+                    <span class="description">บันทึกการชำระเงินสดผ่านเคาน์เตอร์โดยเจ้าหน้าที่</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ใช้สำหรับลูกบ้านที่ถือเงินสดมาจ่ายค่าธรรมเนียมน้ำประปา/ขยะที่สำนักงาน เจ้าหน้าที่จะกดยืนยันยอดเงินที่รับและอัปเดตการชำระบิลสำเร็จ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "invoice_id": 98,
+  "received_amount": 150
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "status": "success",
+  "receipt_url": "/api/payments/receipt/98"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/payments/promptpay [POST] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method POST">POST</span>
+                    <span class="path">/api/payments/promptpay</span>
+                    <span class="description">สร้างคำร้องขอชำระเงินผ่าน PromptPay (สร้าง Omise Source)</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>สร้างรายการ Omise Source ชนิด `promptpay` และออกลิงก์รูปภาพ QR Code เพื่อส่งกลับให้ลูกบ้านสแกนจ่ายเงินผ่านแอปธนาคาร</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "invoice_id": 98,
+  "amount": 150
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "charge_id": "chrg_test_5xyz...",
+  "qr_image_url": "https://api.omise.co/charges/chrg_test_5xyz/documents/doc_test_5xyz/downloads"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/payments/status/:invoice_id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/payments/status/:invoice_id</span>
+                    <span class="description">ตรวจสอบสถานะการจ่ายเงินของใบแจ้งหนี้นั้นๆ</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>เรียกตรวจสอบสถานะธุรกรรมว่าจ่ายเสร็จสิ้น ค้างชำระ หรืออยู่ระหว่างกำลังจ่ายน้ำ/ขยะประจำเดือน</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:invoice_id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของใบแจ้งหนี้</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "invoice_id": 98,
+  "status": "paid",
+  "paid_at": "2026-06-03T10:15:30Z",
+  "payment_method": "promptpay"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/payments/receipt/:invoice_id [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/payments/receipt/:invoice_id</span>
+                    <span class="description">ดึงข้อมูลใบเสร็จรับเงินเพื่อนำมาพิมพ์หรือบันทึก PDF</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลบิลใบเสร็จสรุปยอดเพื่อแสดงความพร้อมพิมพ์หรือเซฟเอกสาร PDF ลงเครื่องคอมพิวเตอร์</p>
+                    
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>URL Param</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="param-name">:invoice_id</td>
+                            <td class="param-type">uint</td>
+                            <td>รหัส ID ของใบแจ้งหนี้</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "receipt_id": 42,
+  "receipt_number": "REC-202606-0042",
+  "invoice_number": "INV-202606-0098",
+  "house_number": "125/4",
+  "owner_name": "สมศักดิ์ รักษ์ดี",
+  "water_amount": 120,
+  "garbage_amount": 30,
+  "total_amount": 150,
+  "payment_method": "promptpay",
+  "payment_date": "2026-06-03T10:15:30Z"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/organization [GET] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method GET">GET</span>
+                    <span class="path">/api/organization</span>
+                    <span class="description">ดึงข้อมูลเกี่ยวกับรายละเอียดองค์การบริหารส่วนตำบล (อบต.)</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>ดึงข้อมูลที่ตั้งหน่วยงาน อบต. และข้อมูลชื่อนายกองค์การบริหารส่วนตำบล เพื่อนำข้อมูลไปกรอกลงหัวฟอร์มเอกสารใบแจ้งหนี้และใบเสร็จรับเงินอย่างเป็นทางการ</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Details</div>
+                    <pre>No request body required</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "subdistrict_id": 1,
+  "organization_full_name": "องค์การบริหารส่วนตำบลในเมือง",
+  "district_name": "เมืองชัยภูมิ",
+  "province_name": "ชัยภูมิ",
+  "title_name": "นาย",
+  "first_name": "สมศักดิ์",
+  "last_name": "ใจดี",
+  "phone_number": "044811000",
+  "address_number": "99 ม.1",
+  "village_id": 1,
+  "village_number": 1,
+  "village_name": "บ้านใหม่"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Route: /api/organization [PATCH] -->
+        <div class="api-item">
+            <div class="api-header" onclick="toggleDetails(this)">
+                <div class="api-header-left">
+                    <span class="method PATCH">PATCH</span>
+                    <span class="path">/api/organization</span>
+                    <span class="description">ปรับปรุงข้อมูลติดต่อและผู้มีอำนาจลงนาม (นายก อบต.)</span>
+                </div>
+                <span class="auth-badge auth-required">BEARER AUTH</span>
+            </div>
+            <div class="api-details">
+                <div class="details-content">
+                    <div class="detail-label">รายละเอียดการทำงาน</div>
+                    <p>บันทึกแก้ไขข้อมูลส่วนกลางขององค์กร เช่น ที่อยู่ หรือชื่อนายก อบต. เมื่อมีคำสั่งปรับเปลี่ยนโครงสร้างกำลังพล</p>
+                    
+                    <div class="details-grid">
+                <div class="code-block-container">
+                    <div class="detail-label">Request Body (JSON)</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "title_name": "นาย",
+  "first_name": "สมศักดิ์",
+  "last_name": "ใจดี",
+  "phone_number": "0811112222",
+  "address_number": "99/1",
+  "village_id": 1,
+  "subdistrict_name": "ตำบลในเมือง",
+  "district_name": "เมืองชัยภูมิ",
+  "province_name": "ชัยภูมิ"
+}</pre>
+                </div>
+            
+                <div class="code-block-container">
+                    <div class="detail-label">Response Example</div>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>{
+  "message": "Organization updated successfully"
+}</pre>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    
+        </div>
+    </div>
+
+    <script>
+        // Add Copy Button to API Paths dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const paths = document.querySelectorAll('.path');
+            paths.forEach(pathSpan => {
+                const pathText = pathSpan.innerText.trim();
+                
+                const btn = document.createElement('button');
+                btn.className = 'copy-path-btn';
+                btn.title = 'คัดลอกเส้นทาง API';
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+                
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent toggling details
+                    
+                    navigator.clipboard.writeText(pathText).then(() => {
+                        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+                        btn.classList.add('copied');
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                });
+                
+                pathSpan.appendChild(btn);
+            });
+        });
+
+        // Collapsible Action
+        function toggleDetails(header) {
+            const details = header.nextElementSibling;
+            details.classList.toggle('open');
+        }
+
+        // Copy functionality
+        function copyCode(btn) {
+            const pre = btn.nextElementSibling;
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.style.background = 'var(--green)';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = 'rgba(255, 255, 255, 0.05)';
+                    btn.style.color = 'var(--muted)';
+                }, 1500);
+            });
+        }
+
+        // Live Filtering
+        function filterRoutes() {
+            const searchVal = document.getElementById('search').value.toLowerCase();
+            const items = document.querySelectorAll('.api-item');
+            
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(searchVal)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Category Filter Tabs
+        function filterCategory(cat, btn) {
+            // Update Active button style
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const categories = document.querySelectorAll('.route-category');
+            categories.forEach(category => {
+                if (cat === 'all' || category.getAttribute('data-cat') === cat) {
+                    category.style.display = 'block';
+                } else {
+                    category.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

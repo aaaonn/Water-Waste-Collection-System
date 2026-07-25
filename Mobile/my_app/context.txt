@@ -1,0 +1,56 @@
+context project - deverlop mobile application
+
+statck: Flutter
+
+theam color: 
+
+
+requirement : แอปจัดเก็บค่าบริการน้ำประปาและค่าบริการเก็บขยะ โดยที่มีแดชบอร์ดรายงานความคืบหน้าการสำรวจครัวเรือน มีหน้าแสดงรายการครัวเรือนเพื่อค้นหาครัวเรือนที่จะสำรว บสำรวจและบันทึกข้อมูลมาตรวัดน้ำและถังขยะ เก็บชำเงินค่าบริการและพิมพ์ใบเส็จผ่านเครื่องพิมพ์ความร้อนพกพาได้
+
+
+folder file and detail:
+
+lib
+|
+|---component => component ที่ใช้ร่วมกันทั้งระบบเก็บที่นี่
+|
+|---screen => เก็บ screen ของแอปพิเคชั่น
+	|
+	|---login
+		|---login_screen.dart => หน้า landing page ที่เข้ามาแล้วให้เข้าสู่ระบบ -> Mobile\my_app\img_ui\login.png
+	|
+	|---home
+		|---home_screen.dart => หน้า dashboard -> Mobile\my_app\img_ui\dashboard.png
+	|
+	|---householde_list
+		|---househole_list_screen.dart => แสดงรายการครัวเรือนและสถานะการสำรวจหรือชำระเงิน มีตัวกรองหมู่บ้าน รอบเดือน และช่องค้นนหาจากชื่อหรือบ้านเลขที่ -> Mobile\my_app\img_ui\household_list.png
+	|
+	|--record
+		|---record_screen.dart => หน้าที่เอาไว้บันทึกข้อมูลการสำรวจ มาตรวัดน้ำ และถังขยะ(ขนาดถังและจำนวน)  ก่อนบันทึก -> Mobile\my_app\img_ui\record1.png  หลังบันทึก -> Mobile\my_app\img_ui\record2.png
+	|
+	|--payment
+		|--- payment_screen.dart => เป็นสำหรับไว้เก็บค่าบริการ แสดงตัวอย่างใบเสร็จ/ใบแจ้งชำระ มีตัวเลือกการชำระว่าเป็นเงินสดหรือqr promtpay -> Mobile\my_app\img_ui\recive.png และ my_app\img_ui\invoice.png
+	|
+	|--setting
+		|---setting => หน้าตั้งค่าเกี่ยวกับแอพพิเคชั่น เช่นตั้งค่าผู้ใช้ และอื่นๆที่ควรมี -> Mobile\my_app\img_ui\setting.png
+	|
+	|---printer
+		|---printer_screen.dart => หน้าสำหรับค้นหาและทำการเชื่อมต่อกับเครื่องพิมพ์ความร้อน
+	
+|
+|---main_screen.dart
+|
+|---main.dart
+
+
+workflow:  เปิดแอป -> login -> หน้าแดชบอร์ด -> task -> ค้นหาครัวเรือน -> กดเข้าครัวเรือนที่จะจดบันทึกข้อมูล -> บันทึกข้อมูล -> เลือกการชำระเงิน -> ชำระเงิน เงินสด/qr promtpay-> พิมใบเสร็จหรือใบแจ้งชำระมี qr promtpay -> จบกระบวนการหนึ่งครัวเรือน
+
+
+
+
+
+
+
+
+อ่านและทำต่อจากโค้ดเดิม  hardcode moc data และทำให้เหมือนใช้งานได้จริงรอแค่เอา api มาเชื่อม
+

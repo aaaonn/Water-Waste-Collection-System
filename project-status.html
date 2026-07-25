@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปสถานะโปรเจกต์ Capstone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --cyan: #06b6d4;
+            --purple: #a78bfa
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Sarabun', sans-serif;
+            padding: 2rem 1rem;
+            line-height: 1.6
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: .5rem;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: .95rem
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center
+        }
+
+        .stat .num {
+            font-size: 1.8rem;
+            font-weight: 800
+        }
+
+        .stat .label {
+            font-size: .8rem;
+            color: var(--muted);
+            margin-top: .25rem
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: .75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .9rem
+        }
+
+        th {
+            text-align: left;
+            padding: .6rem .8rem;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .8rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap
+        }
+
+        td {
+            padding: .6rem .8rem;
+            border-bottom: 1px solid rgba(51, 65, 85, .4);
+            vertical-align: top
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .badge {
+            display: inline-block;
+            padding: .15rem .6rem;
+            border-radius: 100px;
+            font-size: .75rem;
+            font-weight: 700
+        }
+
+        .done {
+            background: rgba(16, 185, 129, .15);
+            color: var(--green)
+        }
+
+        .pending {
+            background: rgba(239, 68, 68, .15);
+            color: var(--red)
+        }
+
+        .partial {
+            background: rgba(245, 158, 11, .15);
+            color: var(--yellow)
+        }
+
+        .tag {
+            background: rgba(59, 130, 246, .1);
+            color: #93c5fd;
+            font-family: monospace;
+            padding: .1rem .4rem;
+            border-radius: 4px;
+            font-size: .75rem
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: .8rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📋 สรุปสถานะโปรเจกต์ Capstone</h1>
+        <p class="sub">ระบบเก็บค่าบริการน้ำประปาและขยะรายเดือน — อัปเดต 5 มิ.ย. 2569 03:02 น.</p>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="num" style="color:var(--cyan)">16</div>
+                <div class="label">ตาราง DB (Entity)</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color:var(--green)">11</div>
+                <div class="label">Controller สำเร็จ</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color:var(--blue)">52</div>
+                <div class="label">API Endpoints</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color:var(--purple)">7</div>
+                <div class="label">หน้าจอ Mobile</div>
+            </div>
+            <div class="stat">
+                <div class="num" style="color:var(--yellow)">1</div>
+                <div class="label">Unit Test File</div>
+            </div>
+        </div>
+
+        <!-- DB ENTITIES -->
+        <div class="section">
+            <h2>🗄️ ตารางฐานข้อมูล (Database Entities) — 16 ตาราง</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>ชื่อตาราง</th>
+                    <th>ไฟล์</th>
+                    <th>Seed Data</th>
+                    <th>มี Controller</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Province</td>
+                    <td><span class="tag">province.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>District</td>
+                    <td><span class="tag">district.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Subdistrict</td>
+                    <td><span class="tag">subdistrict.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>SubdistrictInfo</td>
+                    <td><span class="tag">subdistrict_info.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ มี (Get/Update ผ่าน Organization)</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Village</td>
+                    <td><span class="tag">village.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>VillageDetail</td>
+                    <td><span class="tag">village_detail.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge partial">ผ่าน Village</span></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Login</td>
+                    <td><span class="tag">login.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD (ผ่าน Userstaff / MobileLogin)</span></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Staff</td>
+                    <td><span class="tag">staff.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD (ผ่าน Userstaff)</span></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>HouseHold</td>
+                    <td><span class="tag">house_hold.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD</span></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>WaterUnit</td>
+                    <td><span class="tag">water_unit.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD+Delete</span></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>GarbageSizeCost</td>
+                    <td><span class="tag">garbage_size_cost.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ CRUD+Delete</span></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>WaterReading</td>
+                    <td><span class="tag">water_reading.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ Create+GetLast</span></td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>GarbageReading</td>
+                    <td><span class="tag">garbage_reading.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ Create+GetLast</span></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>GarbageReadingDetail</td>
+                    <td><span class="tag">garbage_reading_detail.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge partial">ผ่าน GarbageReading</span></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Invoice</td>
+                    <td><span class="tag">invoice.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ GetByHouseholdID</span></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>PaymentTransaction</td>
+                    <td><span class="tag">payment_transaction.go</span></td>
+                    <td><span class="badge done">✓</span></td>
+                    <td><span class="badge done">✓ GetByHouseholdID + PromptPay Charge + Webhook</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- BACKEND API -->
+        <div class="section">
+            <h2>⚙️ Backend API Endpoints — 52 เส้นทาง</h2>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Controller</th>
+                    <th>สถานะ</th>
+                </tr>
+                <!-- Auth & Dashboard -->
+                <tr>
+                    <td>POST</td>
+                    <td>/api/login</td>
+                    <td>login</td>
+                    <td><span class="badge done">✓ เสร็จ (เว็บล็อกอิน)</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/mobilelogin</td>
+                    <td>login (auth)</td>
+                    <td><span class="badge done">✓ เสร็จ (โมบายล็อกอิน)</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/profile</td>
+                    <td>login (auth)</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/dashboard/stats</td>
+                    <td>dashboard</td>
+                    <td><span class="badge done">✓ เสร็จ (สถิติรวม อบต.)</span></td>
+                </tr>
+                <!-- Mobile Group (Auth Required) -->
+                <tr>
+                    <td>POST</td>
+                    <td>/api/mobile/households</td>
+                    <td>mobile_household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/households/:id</td>
+                    <td>mobile_household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/villages</td>
+                    <td>mobile_village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/invoices/:id</td>
+                    <td>invoice_receipt</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/receipts/:id</td>
+                    <td>invoice_receipt</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/mobile/water-readings</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/mobile/garbage-readings</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/mobile/garbage-rates</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Villages -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/villages</td>
+                    <td>village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/villages/:id</td>
+                    <td>village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/villages</td>
+                    <td>village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/villages/:id</td>
+                    <td>village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/villages/:id</td>
+                    <td>village</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/villages/:id/households</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Households -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households/:id</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/households</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/households/:id</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/households/:id</td>
+                    <td>household</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Invoices -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households/:id/invoices</td>
+                    <td>invoice</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Payments -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households/:id/payments</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/payments/promptpay</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ (Omise)</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/payments/cash</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ (บันทึกเงินสด Mobile)</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/payments/status/:invoice_id</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/payments/webhook</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ (Signature Ver.)</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/payments/receipt/:invoice_id</td>
+                    <td>payment</td>
+                    <td><span class="badge done">✓ เสร็จ (PDF Receipt)</span></td>
+                </tr>
+                <!-- Readings -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households/:id/last-water-reading</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/households/:id/last-garbage-reading</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/water-readings</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/garbage-readings</td>
+                    <td>reading</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Water Unit Rates -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/water-units</td>
+                    <td>water_unit</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/water-units/:id</td>
+                    <td>water_unit</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/water-units</td>
+                    <td>water_unit</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/water-units/:id</td>
+                    <td>water_unit</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/water-units/:id</td>
+                    <td>water_unit</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Garbage Rates -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/garbage-rates</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/garbage-rates/:id</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/garbage-rates</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/garbage-rates/:id</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/garbage-rates/:id</td>
+                    <td>garbage_rate</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Userstaff Management -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/userstaffs</td>
+                    <td>userstaff</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/userstaffs/:id</td>
+                    <td>userstaff</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/userstaffs</td>
+                    <td>userstaff</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/userstaffs/:id</td>
+                    <td>userstaff</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/userstaffs/:id</td>
+                    <td>userstaff</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Organization -->
+                <tr>
+                    <td>GET</td>
+                    <td>/api/organization</td>
+                    <td>organization</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/organization</td>
+                    <td>organization</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <!-- Household Profile -->
+                <tr>
+                    <td>PATCH</td>
+                    <td>/api/household-profile/:id</td>
+                    <td>household_account_web</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- FRONTEND -->
+        <div class="section">
+            <h2>💻 Frontend Web (Next.js) — หน้าจอและ Service</h2>
+            <table>
+                <tr>
+                    <th>หน้า/ไฟล์</th>
+                    <th>คำอธิบาย</th>
+                    <th>เชื่อม API จริง?</th>
+                    <th>สถานะ</th>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/dashboard/page.tsx</span></td>
+                    <td>แดชบอร์ดสรุปผลของเจ้าหน้าที่ (ความคืบหน้าและแนวโน้มรายได้)</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/base_settings/page.tsx</span></td>
+                    <td>ตั้งค่าน้ำประปา+ขยะ</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/subdistrict_management/villages/page.tsx</span></td>
+                    <td>จัดการหมู่บ้าน</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/subdistrict_management/household/page.tsx</span></td>
+                    <td>จัดการครัวเรือน (ของ Staff/Admin)</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/payments/</span></td>
+                    <td>ชำระเงิน+ตรวจสอบสลิป (ของ Staff/Admin)</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/users/</span></td>
+                    <td>จัดการผู้ใช้/พนักงาน (ของ Admin)</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">landingpage/page.tsx</span></td>
+                    <td>หน้าล็อกอินหลัก (เว็บ)</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จสิ้น (เชื่อมต่อ API & บันทึกคุกกี้สิทธิ์/Token และ Middleware สำเร็จ)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">household/</span> dashboard, history, settings, payment</td>
+                    <td>แดชบอร์ดผู้ใช้น้ำ (ฝั่งประชาชน) และการชำระเงินออนไลน์</td>
+                    <td><span class="badge done">✓ httpClient</span></td>
+                    <td><span class="badge done">✓ เสร็จสิ้น (ดึงข้อมูลผ่าน API โดยตรง ครบทุกหน้า)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">[role]/reports/</span></td>
+                    <td>หน้ารายงานสรุปค่าน้ำประปาและขยะ</td>
+                    <td><span class="badge partial">✓ จำลอง/Export</span></td>
+                    <td><span class="badge partial">⚠ UI/Export เสร็จ (รอเชื่อม API ดึงสถิติจริง)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">sidebar.tsx + navbar.tsx</span></td>
+                    <td>Layout components</td>
+                    <td>—</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- MOBILE -->
+        <div class="section">
+            <h2>📱 Mobile App (Flutter) — 7 หน้าจอ</h2>
+            <table>
+                <tr>
+                    <th>หน้าจอ</th>
+                    <th>คำอธิบาย</th>
+                    <th>เชื่อม API จริง?</th>
+                    <th>สถานะ</th>
+                </tr>
+                <tr>
+                    <td><span class="tag">login/</span></td>
+                    <td>หน้าเข้าสู่ระบบ</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">home/</span></td>
+                    <td>หน้าหลัก Dashboard</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จ (ดึงหมู่บ้าน & คำนวณความคืบหน้าเรียลไทม์)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">household_list/</span></td>
+                    <td>รายชื่อครัวเรือน</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จ (ดึงข้อมูลครัวเรือน / ค้นหาจริงจาก API)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">record/</span></td>
+                    <td>จดมิเตอร์น้ำ+ขยะ</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จ (ดึงอัตราขยะของตำบล & ส่งผลบันทึกผ่าน API)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">payment/</span></td>
+                    <td>ชำระเงิน</td>
+                    <td><span class="badge done">✓ API</span></td>
+                    <td><span class="badge done">✓ เสร็จ (ดึงบิลค้างชำระจริง & รองรับการชำระเงินสดผ่าน API)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">printter/</span></td>
+                    <td>พิมพ์ใบเสร็จ</td>
+                    <td><span class="badge partial">✓ จำลอง/API</span></td>
+                    <td><span class="badge partial">⚠ เชื่อม API ออกใบแจ้งหนี้/ใบเสร็จ & พิมพ์จำลอง</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">setting/</span></td>
+                    <td>ตั้งค่าแอป</td>
+                    <td>—</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- UNIT TESTS -->
+        <div class="section">
+            <h2>🧪 Unit Tests</h2>
+            <table>
+                <tr>
+                    <th>ไฟล์</th>
+                    <th>ทดสอบ Entity</th>
+                    <th>จำนวน Test Cases</th>
+                    <th>สถานะ</th>
+                </tr>
+                <tr>
+                    <td><span class="tag">staff_test.go</span></td>
+                    <td>Staff</td>
+                    <td>8 cases</td>
+                    <td><span class="badge done">✓ เสร็จ</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">household_test.go</span></td>
+                    <td>HouseHold</td>
+                    <td>—</td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">water_unit_test.go</span></td>
+                    <td>WaterUnit</td>
+                    <td>—</td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tag">water_reading_test.go</span></td>
+                    <td>WaterReading</td>
+                    <td>—</td>
+                    <td><span class="badge pending">✗ ยังไม่มี</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- TODO -->
+        <div class="section" style="border-color:var(--yellow)">
+            <h2>🟡 สิ่งที่ต้องทำเพิ่ม (Remaining Tasks)</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>รายการ</th>
+                    <th>ส่วน</th>
+                    <th>ความสำคัญ</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td><span style="text-decoration: line-through; color: #94a3b8">เชื่อม API หน้าเว็บหลัก (Login & Route Guard)</span></td>
+                    <td>Frontend</td>
+                    <td><span class="badge" style="background:rgba(34,197,94,.2);color:#4ade80">เสร็จสิ้น</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><span style="text-decoration: line-through; color: #94a3b8">ถอด mock 60 ครัวเรือนในแอป ดึง API จริง</span></td>
+                    <td>Mobile</td>
+                    <td><span class="badge" style="background:rgba(34,197,94,.2);color:#4ade80">เสร็จสิ้น</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><span style="text-decoration: line-through; color: #94a3b8">เปลี่ยนสูตรคำนวณค่าน้ำ/ขยะในแอปจาก hardcode เป็น API</span></td>
+                    <td>Mobile</td>
+                    <td><span class="badge" style="background:rgba(34,197,94,.2);color:#4ade80">เสร็จสิ้น</span></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><span style="text-decoration: line-through; color: #94a3b8">หน้าแดชบอร์ดฝั่งประชาชน ให้ดึงข้อมูลจริงจาก API</span></td>
+                    <td>Frontend</td>
+                    <td><span class="badge" style="background:rgba(34,197,94,.2);color:#4ade80">เสร็จสิ้น</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>ต่อเครื่องพิมพ์ Bluetooth จริง (blue_thermal_printer)</td>
+                    <td>Mobile</td>
+                    <td><span class="badge" style="background:rgba(245,158,11,.2);color:#fbbf24">กลาง</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>เขียน Unit Test สำหรับ Entity: HouseHold</td>
+                    <td>Test</td>
+                    <td><span class="badge" style="background:rgba(148,163,184,.2);color:#94a3b8">ต่ำ</span></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>เขียน Unit Test สำหรับ Entity: WaterUnit</td>
+                    <td>Test</td>
+                    <td><span class="badge" style="background:rgba(148,163,184,.2);color:#94a3b8">ต่ำ</span></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>เขียน Unit Test สำหรับ Entity: WaterReading</td>
+                    <td>Test</td>
+                    <td><span class="badge" style="background:rgba(148,163,184,.2);color:#94a3b8">ต่ำ</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <footer>© 2026 Capstone Project — อัปเดตล่าสุดเมื่อ 5 มิ.ย. 2569 03:02 น.</footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Use Cases — ระบบจัดเก็บค่าน้ำและค่าขยะ อบต.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --primary: #0f4c81;
+      --primary-light: #e8f1f8;
+      --accent: #0d9488;
+      --accent-light: #ecfdf5;
+      --warning: #d97706;
+      --warning-light: #fffbeb;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --shadow: 0 1px 3px rgba(15, 76, 129, 0.08), 0 4px 16px rgba(15, 76, 129, 0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* Header */
+    .hero {
+      background: linear-gradient(135deg, #0f4c81 0%, #1a6b9a 50%, #0d9488 100%);
+      color: #fff;
+      padding: 3rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      opacity: 0.9;
+      max-width: 720px;
+      font-weight: 300;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .main { padding: 2.5rem 0 4rem; }
+
+    /* Nav */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      margin-top: -2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 1;
+    }
+
+    .toc h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.5rem 1.5rem;
+    }
+
+    .toc a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+    /* Section */
+    section { margin-bottom: 3rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card + .card { margin-top: 1rem; }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .overview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .overview-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .overview-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Actors */
+    .actors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .actor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .actor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(15, 76, 129, 0.12);
+    }
+
+    .actor-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .actor-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .actor-card p { font-size: 0.82rem; color: var(--text-muted); }
+
+    .actor-sa .actor-icon { background: #ede9fe; }
+    .actor-ad .actor-icon { background: var(--primary-light); }
+    .actor-st .actor-icon { background: var(--accent-light); }
+    .actor-fs .actor-icon { background: #fef3c7; }
+    .actor-hh .actor-icon { background: #fce7f3; }
+
+    /* UC Table */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 0.9rem;
+    }
+
+    thead { background: var(--primary); color: #fff; }
+
+    th {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:hover { background: var(--surface-2); }
+
+    .uc-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .actor-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      margin: 0.1rem;
+      white-space: nowrap;
+    }
+
+    /* UC Detail Cards */
+    .uc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .uc-card-header {
+      background: linear-gradient(90deg, var(--primary-light), var(--surface));
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .uc-card-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      flex: 1;
+    }
+
+    .uc-card-body { padding: 1.25rem 1.5rem; }
+
+    .uc-block { margin-bottom: 1rem; }
+    .uc-block:last-child { margin-bottom: 0; }
+
+    .uc-block-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+    }
+
+    .label-desc { color: var(--primary); }
+    .label-pain { color: var(--warning); }
+    .label-kpi { color: var(--accent); }
+
+    .uc-block p {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .uc-block.pain {
+      background: var(--warning-light);
+      border-left: 3px solid var(--warning);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .uc-block.kpi {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    /* UML Use Case Diagram */
+    .uc-diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 1.5rem 1rem;
+      margin-bottom: 1.25rem;
+      background: #fafbfc;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+    }
+
+    .uc-diagram-actor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .stick-figure {
+      width: 36px;
+      height: 56px;
+      position: relative;
+    }
+
+    .stick-figure::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 14px; height: 14px;
+      border: 2px solid var(--text);
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .stick-figure::after {
+      content: '';
+      position: absolute;
+      top: 14px; left: 50%;
+      transform: translateX(-50%);
+      width: 2px; height: 42px;
+      background: var(--text);
+      box-shadow: -10px 14px 0 0 var(--text), 10px 14px 0 0 var(--text), 0 28px 0 0 var(--text);
+    }
+
+    .uc-diagram-actor-label {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .uc-diagram-actor-label .stereo {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .uc-diagram-line {
+      width: 40px;
+      height: 2px;
+      background: var(--text);
+      flex-shrink: 0;
+    }
+
+    .uc-diagram-line.dashed {
+      background: none;
+      border-top: 2px dashed var(--text-muted);
+      height: 0;
+      width: 36px;
+    }
+
+    .uc-diagram-oval {
+      min-width: 140px;
+      max-width: 180px;
+      padding: 1rem 1.25rem;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--surface);
+      line-height: 1.35;
+      flex-shrink: 0;
+    }
+
+    .uc-diagram-oval .stereo {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .uc-diagram-note {
+      position: relative;
+      min-width: 220px;
+      max-width: 300px;
+      padding: 1rem 1.1rem;
+      background: #fffef0;
+      border: 1px solid #d4c96a;
+      border-radius: 2px;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+
+    .uc-diagram-note::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 0 14px 14px 0;
+      border-color: transparent #e8e0a0 transparent transparent;
+    }
+
+    .uc-diagram-note p { margin-bottom: 0.35rem; }
+    .uc-diagram-note p:last-child { margin-bottom: 0; }
+
+    .uc-diagram-note strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .uc-diagram-note .en {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Pain summary table */
+    .pain-table td:first-child {
+      font-weight: 600;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .pain-table .old { color: var(--danger); }
+    .pain-table .new { color: var(--accent); }
+
+    /* KPI table */
+    .kpi-table td:nth-child(2) {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* Diagram */
+    .diagram-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1rem;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    .mermaid { text-align: center; }
+
+    /* Footer */
+    footer {
+      background: var(--primary);
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    footer strong { color: #fff; }
+
+    /* Print */
+    @media print {
+      .hero { padding: 1.5rem; }
+      .toc { margin-top: 0; }
+      .uc-card { break-inside: avoid; }
+      body { background: #fff; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 3rem; }
+      .container { padding: 0 1rem; }
+      .uc-card-header { padding: 0.85rem 1rem; }
+      .uc-card-body { padding: 1rem; }
+      .uc-diagram { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+      .uc-diagram-line, .uc-diagram-line.dashed { width: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner container">
+      <div class="hero-badge">Capstone Project — Business Analysis</div>
+      <h1>Business Use Cases<br>ระบบจัดเก็บค่าน้ำและค่าขยะ อบต./เทศบาล</h1>
+      <p>เอกสารสรุป Business Use Case ระดับองค์กรท้องถิ่น เน้น "ทำไมต้องมีระบบ" และผลลัพธ์ทางธุรกิจที่วัดได้ ไม่เน้นรายละเอียดทางเทคนิค</p>
+      <div class="hero-meta">
+        <span>🏛️ องค์การบริหารส่วนตำบล (อบต.)</span>
+        <span>💧 ค่าน้ำประปา + 🗑️ ค่าเก็บขยะ</span>
+        <span>📱 Web + Mobile + Citizen Portal</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+
+      <!-- TOC -->
+      <nav class="toc">
+        <h2>สารบัญ</h2>
+        <div class="toc-grid">
+          <a href="#overview">ภาพรวมระบบ</a>
+          <a href="#actors">Actors</a>
+          <a href="#uc-list">รายการ Use Cases</a>
+          <a href="#uc-details">รายละเอียด Use Cases</a>
+          <a href="#pain-summary">สรุป Pain Points</a>
+          <a href="#kpi-summary">KPI ระดับองค์กร</a>
+          <a href="#diagram">แผนภาพ Actor ↔ UC</a>
+        </div>
+      </nav>
+
+      <!-- Overview -->
+      <section id="overview">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <h2>ภาพรวม: ทำไม อบต. ต้องมีระบบนี้</h2>
+        </div>
+        <div class="overview-grid">
+          <div class="overview-card">
+            <h3>ปัญหาที่แก้</h3>
+            <p>อบต. ต้องจัดเก็บค่าบริการจากครัวเรือนหลายร้อย–หลายพันหลัง กระจายหลายหมู่บ้าน กระบวนการเดิมพึ่งสมุดบันทึก เอกสารกระดาษ และการคำนวณด้วยมือ</p>
+          </div>
+          <div class="overview-card">
+            <h3>สิ่งที่ระบบทำ</h3>
+            <p>รวมศูนย์ข้อมูลครัวเรือน → ลงพื้นที่จดมิเตอร์/ถังขยะ → คำนวณและออกบิลอัตโนมัติ → รับชำระหลายช่องทาง → รายงานผลให้ผู้บริหารตัดสินใจ</p>
+          </div>
+          <div class="overview-card">
+            <h3>ช่องทางการใช้งาน</h3>
+            <p><strong>เว็บหลังบ้าน</strong> — สำนักงาน อบต. (Admin/Staff)<br>
+               <strong>แอปมือถือ</strong> — เจ้าหน้าที่ภาคสนาม<br>
+               <strong>พอร์ทัลประชาชน</strong> — ครัวเรือนดูบิลและชำระออนไลน์</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actors -->
+      <section id="actors">
+        <div class="section-header">
+          <div class="section-icon">👥</div>
+          <h2>Actors (ผู้เกี่ยวข้อง)</h2>
+        </div>
+        <div class="actors">
+          <div class="actor-card actor-sa">
+            <div class="actor-icon">🔑</div>
+            <h3>Super Admin</h3>
+            <p>จัดการข้อมูลองค์กร อบต. และผู้ใช้ระดับสูง ตั้งค่าระบบเริ่มต้น</p>
+          </div>
+          <div class="actor-card actor-ad">
+            <div class="actor-icon">🏛️</div>
+            <h3>Admin ตำบล</h3>
+            <p>ผู้ดูแลระบบหลัก กำหนดอัตราค่าบริการ จัดการครัวเรือน ผู้ใช้ และรายงาน</p>
+          </div>
+          <div class="actor-card actor-st">
+            <div class="actor-icon">💼</div>
+            <h3>Staff สำนักงาน</h3>
+            <p>เจ้าหน้าที่สำนักงาน ลงทะเบียนครัวเรือน รับชำระที่สำนักงาน ดูรายงาน</p>
+          </div>
+          <div class="actor-card actor-fs">
+            <div class="actor-icon">📱</div>
+            <h3>Staff ภาคสนาม</h3>
+            <p>เจ้าหน้าที่สนาม ลงพื้นที่จดมิเตอร์ เก็บเงิน พิมพ์ใบเสร็จ (แอปมือถือเท่านั้น)</p>
+          </div>
+          <div class="actor-card actor-hh">
+            <div class="actor-icon">🏠</div>
+            <h3>ประชาชน / ครัวเรือน</h3>
+            <p>ดูยอดค้างชำระ ประวัติการใช้น้ำ ชำระค่าบริการออนไลน์ผ่าน PromptPay</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- UC List -->
+      <section id="uc-list">
+        <div class="section-header">
+          <div class="section-icon">📑</div>
+          <h2>รายการ Business Use Cases (16 รายการ)</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Use Case</th>
+                <th>Actor หลัก</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="uc-id">UC-01</span></td><td>จัดการข้อมูลองค์กร อบต.</td><td><span class="actor-tag">Super Admin</span></td></tr>
+              <tr><td><span class="uc-id">UC-02</span></td><td>จัดการบัญชีผู้ใช้งานระบบ</td><td><span class="actor-tag">Super Admin</span> <span class="actor-tag">Admin ตำบล</span></td></tr>
+              <tr><td><span class="uc-id">UC-03</span></td><td>กำหนดอัตราค่าน้ำประปาขั้นบันได</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-04</span></td><td>กำหนดอัตราค่าเก็บขยะตามขนาดถัง</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-05</span></td><td>จัดการข้อมูลหมู่บ้านและผู้ใหญ่บ้าน</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-06</span></td><td>ลงทะเบียนและจัดการข้อมูลครัวเรือน</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-07</span></td><td>นำเข้าข้อมูลครัวเรือนจำนวนมาก (Bulk Import)</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-08</span></td><td>ลงพื้นที่จดมิเตอร์น้ำและถังขยะ</td><td><span class="actor-tag">Staff ภาคสนาม</span></td></tr>
+              <tr><td><span class="uc-id">UC-09</span></td><td>ออกใบแจ้งหนี้รายเดือนอัตโนมัติ</td><td><span class="actor-tag">ระบบ</span></td></tr>
+              <tr><td><span class="uc-id">UC-10</span></td><td>รับชำระเงินหน้างาน (เงินสด/QR)</td><td><span class="actor-tag">Staff ภาคสนาม</span></td></tr>
+              <tr><td><span class="uc-id">UC-11</span></td><td>รับชำระเงินที่สำนักงาน อบต.</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-12</span></td><td>ชำระค่าบริการออนไลน์ผ่าน PromptPay</td><td><span class="actor-tag">ประชาชน/ครัวเรือน</span></td></tr>
+              <tr><td><span class="uc-id">UC-13</span></td><td>ออกและพิมพ์ใบเสร็จรับเงินหน้างาน</td><td><span class="actor-tag">Staff ภาคสนาม</span></td></tr>
+              <tr><td><span class="uc-id">UC-14</span></td><td>ติดตามความคืบหน้าการลงพื้นที่และเก็บเงิน</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+              <tr><td><span class="uc-id">UC-15</span></td><td>ดูยอดค้างชำระและประวัติการใช้น้ำ</td><td><span class="actor-tag">ประชาชน/ครัวเรือน</span></td></tr>
+              <tr><td><span class="uc-id">UC-16</span></td><td>จัดทำรายงานรายได้และประสิทธิภาพการเก็บเงิน</td><td><span class="actor-tag">Admin ตำบล</span> <span class="actor-tag">Staff</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- UC Details -->
+      <section id="uc-details">
+        <div class="section-header">
+          <div class="section-icon">🔍</div>
+          <h2>รายละเอียด Use Cases (UML + User Story)</h2>
+        </div>
+
+        <div class="uc-card" id="uc-01">
+          <div class="uc-card-header"><span class="uc-id">UC-01</span><h3>จัดการข้อมูลองค์กร อบต.</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Super Admin</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>จัดการข้อมูลองค์กร อบต.</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Super Admin <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> จัดการข้อมูลองค์กร อบต. <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ให้ระบบทุกช่องทางใช้ข้อมูลองค์กรที่ถูกต้องในการออกใบแจ้งหนี้ ใบเสร็จ และรายงานทางการ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Super Admin บันทึกและปรับปรุงข้อมูลพื้นฐานของ อบต. เช่น ชื่อองค์กร ที่อยู่สำนักงาน ข้อมูลนายก อบต. และขอบเขตตำบล เพื่อให้ระบบทุกช่องทางอ้างอิงข้อมูลเดียวกัน ข้อมูลนี้เป็นฐานสำหรับออกใบแจ้งหนี้ ใบเสร็จ และรายงานทางการ</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ข้อมูลองค์กรกระจายอยู่ในหลายเอกสาร/ไฟล์ แก้ไขยาก และไม่สอดคล้องกันระหว่างสำนักงานกับหน้างาน</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>ข้อมูลองค์กรครบถ้วน 100% ก่อนเปิดรอบเก็บเงิน | ลดเวลาตั้งค่าระบบเริ่มต้นจากหลายสัปดาห์เหลือไม่กี่วัน</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-02">
+          <div class="uc-card-header"><span class="uc-id">UC-02</span><h3>จัดการบัญชีผู้ใช้งานระบบ</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Admin ตำบล</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>จัดการบัญชีผู้ใช้งานระบบ</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Admin ตำบล <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> จัดการบัญชีผู้ใช้งานระบบ <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ควบคุมสิทธิ์การเข้าถึงและความปลอดภัยของข้อมูลการเงินและข้อมูลครัวเรือน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin ตำบล สร้าง แก้ไข ระงับ และกำหนดสิทธิ์บัญชีเจ้าหน้าที่สำนักงานและเจ้าหน้าที่ภาคสนาม รวมถึงการควบคุมสถานะ active/inactive เพื่อความปลอดภัยของข้อมูลการเงินและข้อมูลครัวเรือน</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ไม่มีการควบคุมสิทธิ์ชัดเจน บัญชีเก่าของเจ้าหน้าที่ที่ลาออกยังเข้าระบบได้ หรือเจ้าหน้าที่ทำงานซ้ำซ้อนกัน</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>อัตราบัญชีที่ active ตรงกับเจ้าหน้าที่ปัจจุบัน ≥ 98% | ลดเหตุการณ์เข้าถึงข้อมูลโดยไม่ได้รับอนุญาตเป็น 0 รายการ/เดือน</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-03">
+          <div class="uc-card-header"><span class="uc-id">UC-03</span><h3>กำหนดอัตราค่าน้ำประปาขั้นบันได</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Admin ตำบล</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>กำหนดอัตราค่าน้ำประปาขั้นบันได</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Admin ตำบล <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> กำหนดอัตราค่าน้ำประปาขั้นบันได <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ให้ระบบคำนวณค่าน้ำถูกต้องตามมติ อบต. โดยไม่ต้องคำนวณด้วยมือ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff กำหนดอัตราค่าน้ำแบบขั้นบันได (เช่น 0–5 หน่วย = 4 บาท/หน่วย, 6–10 หน่วย = 5 บาท/หน่วย) ตามมติ อบต. ระบบเก็บประวัติอัตราแยกตามรอบเดือน เพื่อไม่ให้การเปลี่ยนอัตราย้อนหลังกระทบบิลที่ออกไปแล้ว</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>คำนวณค่าน้ำด้วยมือหรือ Excel ผิดพลาดบ่อย โดยเฉพาะเมื่อมีการปรับอัตราขั้นบันได</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>อัตราคิดเงินถูกต้อง 100% ตามมติ อบต. | ลดข้อพิพาทเรื่องค่าน้ำคำนวณผิด ≥ 80%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-04">
+          <div class="uc-card-header"><span class="uc-id">UC-04</span><h3>กำหนดอัตราค่าเก็บขยะตามขนาดถัง</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Admin ตำบล</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>กำหนดอัตราค่าเก็บขยะตามขนาดถัง</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Admin ตำบล <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> กำหนดอัตราค่าเก็บขยะตามขนาดถัง <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ให้เจ้าหน้าที่สนามบันทึกและคิดค่าขยะได้ตรงกับอัตราที่ อบต. กำหนด <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff กำหนดอัตราค่าขยะตามขนาดถัง (เช่น 20L, 50L, 100L) ที่ อบต. ใช้จริง เจ้าหน้าที่สนามจึงบันทึกขนาดและจำนวนถังได้ตรงกับอัตราที่กำหนด</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>อัตราค่าขยะไม่เป็นมาตรฐาน บันทึกไม่ตรงกับถังจริง ทำให้รายได้ขาดทุนหรือเกิดข้อโต้แย้งกับประชาชน</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>ครัวเรือนที่ใช้บริการขยะมีการบันทึกขนาดถังครบถ้วน ≥ 95% | รายได้ค่าขยะตรงกับอัตราที่กำหนด 100%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-05">
+          <div class="uc-card-header"><span class="uc-id">UC-05</span><h3>จัดการข้อมูลหมู่บ้านและผู้ใหญ่บ้าน</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff สำนักงาน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>จัดการข้อมูลหมู่บ้านและผู้ใหญ่บ้าน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff สำนักงาน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> จัดการข้อมูลหมู่บ้านและผู้ใหญ่บ้าน <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ใช้เป็นหน่วยในการมอบหมายงาน กรองรายงาน และติดตามความคืบหน้าแยกตามหมู่บ้าน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff ลงทะเบียนหมู่บ้านในเขตตำบล (หมู่ที่, ชื่อหมู่บ้าน, ผู้ใหญ่บ้าน, จำนวนบ้าน) เพื่อใช้เป็นหน่วยในการกรองรายงาน มอบหมายงานเจ้าหน้าที่สนาม และติดตามความคืบหน้าแยกตามหมู่บ้าน</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ไม่มีฐานข้อมูลหมู่บ้านรวมศูนย์ ทำให้รายงานและการมอบหมายงานทำด้วยมือ ไม่ทราบว่าหมู่ไหนค้างชำระมาก</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>หมู่บ้านในเขตตำบลลงทะเบียนครบ 100% | รายงานแยกหมู่บ้านพร้อมใช้ภายใน 1 คลิก</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-06">
+          <div class="uc-card-header"><span class="uc-id">UC-06</span><h3>ลงทะเบียนและจัดการข้อมูลครัวเรือน</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff สำนักงาน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ลงทะเบียนและจัดการข้อมูลครัวเรือน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff สำนักงาน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ลงทะเบียนและจัดการข้อมูลครัวเรือน <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> มีฐานข้อมูลครัวเรือนครบถ้วนสำหรับออกบิล เก็บเงิน และให้ประชาชนเข้าพอร์ทัลได้ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff ลงทะเบียนครัวเรือน (รหัสครัวเรือน, บ้านเลขที่, ชื่อ-นามสกุล, เลขบัตรประชาชน, เลขผู้ใช้น้ำ, สถานะใช้น้ำ/ขยะ) และสร้างบัญชี login ให้ประชาชนเข้าพอร์ทัลดูบิลได้ ข้อมูลครัวเรือนเป็นหัวใจของทุกกระบวนการเก็บเงิน</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ทะเบียนครัวเรือนกระจัดกระจายในสมุด/ไฟล์ Excel ข้อมูลซ้ำซ้อน ค้นหายาก และไม่เชื่อมกับระบบชำระเงิน</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>ครัวเรือนที่ใช้บริการลงทะเบียนในระบบ ≥ 95% | ลดเวลาค้นหาข้อมูลครัวเรือนจาก 5–10 นาที เหลือ &lt; 30 วินาที</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-07">
+          <div class="uc-card-header"><span class="uc-id">UC-07</span><h3>นำเข้าข้อมูลครัวเรือนจำนวนมาก (Bulk Import)</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff สำนักงาน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>นำเข้าข้อมูลครัวเรือนจำนวนมาก</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff สำนักงาน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> นำเข้าข้อมูลครัวเรือนจำนวนมากจากไฟล์ <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ลดเวลาคีย์ข้อมูลและเปิดใช้ระบบได้เร็วขึ้นเมื่อมีครัวเรือนหลายร้อยหลัง <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff นำเข้าข้อมูลครัวเรือนจากไฟล์ CSV เมื่อเริ่มใช้ระบบหรือมีการอัปเดตทะเบียนจำนวนมาก ลดภาระการคีย์ข้อมูลทีละรายการในช่วงเปิดระบบ</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>การคีย์ข้อมูลครัวเรือนหลายร้อยหลังด้วยมือใช้เวลานาน เกิดข้อผิดพลาดสูง และล่าช้าการเปิดใช้ระบบ</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>นำเข้าครัวเรือน 500+ รายการได้ภายใน 1 วัน | อัตราข้อผิดพลาดจากการคีย์ลดลง ≥ 70% เทียบกับคีย์มือ</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-08">
+          <div class="uc-card-header"><span class="uc-id">UC-08</span><h3>ลงพื้นที่จดมิเตอร์น้ำและถังขยะ</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff ภาคสนาม</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ลงพื้นที่จดมิเตอร์น้ำและถังขยะ</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff ภาคสนาม <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ลงพื้นที่จดมิเตอร์น้ำและถังขยะผ่านแอปมือถือ <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> บันทึกข้อมูลหน้างานได้ทันทีโดยไม่ต้องจดสมุดแล้วคีย์ซ้ำที่สำนักงาน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>เจ้าหน้าที่ภาคสนามใช้แอปมือถือลงพื้นที่ ค้นหาครัวเรือน จดเลขมิเตอร์น้ำ (ต้องไม่น้อยกว่าครั้งก่อน) และบันทึกขนาด/จำนวนถังขยะ ระบบบันทึกข้อมูลทันทีแทนการเขียนสมุด</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>จดมิเตอร์ด้วยสมุดกระดาษ ข้อมูลหาย/อ่านไม่ออก ต้องคีย์ซ้ำที่สำนักงาน ล่าช้าและผิดพลาด</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>อัตราครัวเรือนที่ลงพื้นที่สำรวจครบภายในรอบเดือน ≥ 90% | ลดเวลาต่อครัวเรือนจาก 10–15 นาที เหลือ 3–5 นาที</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-09">
+          <div class="uc-card-header"><span class="uc-id">UC-09</span><h3>ออกใบแจ้งหนี้รายเดือนอัตโนมัติ</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>ระบบ</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ออกใบแจ้งหนี้รายเดือนอัตโนมัติ</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> อบต. <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ให้ระบบออกใบแจ้งหนี้รายเดือนอัตโนมัติ <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> คำนวณค่าน้ำและค่าขยะรวมในบิลเดียวได้ทันทีหลังบันทึกหน้างาน โดยไม่ต้องคำนวณด้วยมือ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>เมื่อเจ้าหน้าที่สนามบันทึกมิเตอร์และถังขยะ ระบบคำนวณค่าน้ำ (ขั้นบันได) + ค่าขยะ แล้วออกใบแจ้งหนี้รวมในบิลเดียวต่อครัวเรือนต่อเดือน พร้อมกำหนดวันครบกำหนดชำระ</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>คำนวณและออกบิลด้วยมือใช้เวลาหลายวันต่อรอบ เกิดความล่าช้าในการแจ้งยอดและเก็บเงิน</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>บิลออกภายใน 24 ชม. หลังบันทึกหน้างาน 100% | ลดข้อผิดพลาดการคำนวณบิลเป็น 0%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-10">
+          <div class="uc-card-header"><span class="uc-id">UC-10</span><h3>รับชำระเงินหน้างาน (เงินสด/QR PromptPay)</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff ภาคสนาม</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>รับชำระเงินหน้างาน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff ภาคสนาม <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> รับชำระเงินหน้างานผ่านเงินสดหรือ QR PromptPay <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> เก็บเงินได้ทันทีหลังจดมิเตอร์และอัปเดตสถานะบิลโดยไม่ต้องกลับมาคีย์ที่สำนักงาน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>เจ้าหน้าที่สนามรับชำระทันทีหลังจดมิเตอร์ ผ่านเงินสดหรือ QR PromptPay บนแอปมือถือ ยอดชำระอัปเดตสถานะบิลทันที ไม่ต้องกลับมาคีย์ที่สำนักงาน</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>เก็บเงินสดแล้วบันทึกไม่ทัน เงินสูญหาย หรือสถานะบิลไม่ตรงกับความเป็นจริง</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>อัตราเก็บเงินได้หน้างาน (Pay-at-door) ≥ 60% ของบิลที่ออก | ลดเวลาปิดยอดเงินสดรายวัน ≥ 50%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-11">
+          <div class="uc-card-header"><span class="uc-id">UC-11</span><h3>รับชำระเงินที่สำนักงาน อบต.</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff สำนักงาน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>รับชำระเงินที่สำนักงาน อบต.</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff สำนักงาน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> รับชำระเงินที่สำนักงาน อบต. <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ให้ประชาชนที่มาชำระที่สำนักงานได้รับการบันทึกยอดทันทีและไม่ต้องชำระซ้ำ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>ประชาชนที่มาชำระที่สำนักงาน เจ้าหน้าที่ค้นหาครัวเรือน ตรวจสอบบิลค้างชำระ แล้วรับชำระเงินสดหรือ QR ผ่านระบบหลังบ้าน สถานะอัปเดตแบบ real-time เหมือนช่องทางอื่น</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ประชาชนมาชำระที่สำนักงานแต่ข้อมูลไม่อัปเดต ต้องโทรตามหรือมาชำระซ้ำ</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>เวลารอคิวชำระเงินที่สำนักงานลดลง ≥ 40% | ยอดชำระที่สำนักงานบันทึกเข้าระบบภายใน 5 นาที 100%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-12">
+          <div class="uc-card-header"><span class="uc-id">UC-12</span><h3>ชำระค่าบริการออนไลน์ผ่าน PromptPay</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>ประชาชน/ครัวเรือน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ชำระค่าบริการออนไลน์ผ่าน PromptPay</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> ประชาชน/ครัวเรือน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ชำระค่าบริการออนไลน์ผ่าน PromptPay <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ชำระค่าน้ำและค่าขยะได้สะดวกตลอด 24 ชม. โดยไม่ต้องเดินทางมาสำนักงาน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>ครัวเรือน login พอร์ทัล ดูยอดค้างชำระ เลือกบิล แล้วชำระผ่าน QR PromptPay ได้ตลอด 24 ชม. ไม่ต้องเดินทางมาสำนักงานหรือรอเจ้าหน้าที่สนาม</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ประชาชนทำงานนอกบ้าน ไม่ทันชำระเมื่อเจ้าหน้าที่มาเก็บ ทำให้ค้างชำระสะสมและติดตามยาก</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>สัดส่วนชำระออนไลน์ ≥ 20–30% ของยอดเก็บได้ทั้งหมด | ลดบิลค้างชำระเกิน 30 วัน ≥ 25%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-13">
+          <div class="uc-card-header"><span class="uc-id">UC-13</span><h3>ออกและพิมพ์ใบเสร็จรับเงินหน้างาน</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Staff ภาคสนาม</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ออกและพิมพ์ใบเสร็จรับเงินหน้างาน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Staff ภาคสนาม <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ออกและพิมพ์ใบเสร็จรับเงินหน้างาน <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ให้ประชาชนมีหลักฐานการชำระทันทีและลดข้อร้องเรียนเรื่องไม่มีใบเสร็จ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>หลังชำระเงินสำเร็จ เจ้าหน้าที่สนามพิมพ์ใบเสร็จหรือใบแจ้งชำระผ่านเครื่องพิมพ์ความร้อนพกพา หรือแสดง QR สำหรับชำระภายหลัง ให้ประชาชนมีหลักฐานทันที</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ไม่มีใบเสร็จทันที ประชาชนไม่มั่นใจว่าชำระแล้ว หรือต้องกลับมารับที่สำนักงานอีกครั้ง</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>ใบเสร็จออกทันทีหลังชำระ 100% | ลดข้อร้องเรียนเรื่องหลักฐานการชำระ ≥ 90%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-14">
+          <div class="uc-card-header"><span class="uc-id">UC-14</span><h3>ติดตามความคืบหน้าการลงพื้นที่และเก็บเงิน</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Admin ตำบล</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ติดตามความคืบหน้าการลงพื้นที่และเก็บเงิน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Admin ตำบล <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ติดตามความคืบหน้าการลงพื้นที่และเก็บเงิน <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ทราบสถานะจริงระหว่างรอบเดือนและเร่งรัดทีมสนามได้ทันเวลา <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff ดูแดชบอร์ดสรุปความคืบหน้ารายเดือน: ครัวเรือนที่ยังไม่ลงพื้นที่ / สำรวจแล้วแต่ยังไม่ชำระ / ชำระแล้ว กรองตามหมู่บ้าน เดือน ปี เพื่อมอบหมายงานและเร่งรัดทีมสนาม</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ผู้บริหารไม่ทราบสถานะจริงจนกว่าจะสิ้นเดือน ไม่สามารถเร่งรัดทีมหรือตัดสินใจได้ทันเวลา</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>รู้สถานะความคืบหน้าแบบ real-time ตลอดรอบเดือน | ปิดรอบเก็บเงินเร็วขึ้น 5–7 วัน เทียบกับระบบเดิม</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-15">
+          <div class="uc-card-header"><span class="uc-id">UC-15</span><h3>ดูยอดค้างชำระและประวัติการใช้น้ำ</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>ประชาชน/ครัวเรือน</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>ดูยอดค้างชำระและประวัติการใช้น้ำ</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> ประชาชน/ครัวเรือน <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> ดูยอดค้างชำระและประวัติการใช้น้ำ <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> ตรวจสอบยอดและวางแผนชำระได้เองโดยไม่ต้องโทรถามสำนักงาน <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>ครัวเรือนเข้าพอร์ทัลดูยอดค้างปัจจุบัน ยอดค้างสะสม กราฟการใช้น้ำ 6 เดือนย้อนหลัง และประวัติการชำระ ช่วยให้ประชาชนตรวจสอบและวางแผนชำระได้เอง</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>ประชาชนไม่ทราบยอดค้างจนกว่าเจ้าหน้าที่จะมา หรือต้องโทรถามสำนักงาน สร้างความไม่สะดวกและความไม่โปร่งใส</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>ครัวเรือนที่เปิดใช้พอร์ทัล ≥ 50% ภายใน 1 ปี | ลดสายโทรสอบถามยอดค้าง ≥ 60%</p></div>
+          </div>
+        </div>
+
+        <div class="uc-card" id="uc-16">
+          <div class="uc-card-header"><span class="uc-id">UC-16</span><h3>จัดทำรายงานรายได้และประสิทธิภาพการเก็บเงิน</h3></div>
+          <div class="uc-card-body">
+            <div class="uc-diagram">
+              <div class="uc-diagram-actor"><div class="stick-figure"></div><div class="uc-diagram-actor-label"><span class="stereo">&lt;&lt;Business&gt;&gt;</span><br>Admin ตำบล</div></div>
+              <div class="uc-diagram-line"></div>
+              <div class="uc-diagram-oval"><span class="stereo">&lt;&lt;Business&gt;&gt;</span>จัดทำรายงานรายได้และประสิทธิภาพการเก็บเงิน</div>
+              <div class="uc-diagram-line dashed"></div>
+              <div class="uc-diagram-note">
+                <p><strong>ในฐานะ</strong> Admin ตำบล <span class="en">(As a)</span></p>
+                <p><strong>ฉันต้องการ</strong> จัดทำรายงานรายได้และประสิทธิภาพการเก็บเงิน <span class="en">(I want to)</span></p>
+                <p><strong>เพื่อ</strong> นำเสนอที่ประชุม อบต. และวางแผนงบประมาณบำรุงรักษาระบบน้ำและขยะ <span class="en">(So that)</span></p>
+              </div>
+            </div>
+            <div class="uc-block"><div class="uc-block-label label-desc">คำอธิบาย</div><p>Admin/Staff สร้างรายงานรายได้แยกค่าน้ำ/ค่าขยะ เปรียบเทียบยอดเก็บได้กับเป้าหมาย แยกตามหมู่บ้าน และดูแนวโน้มรายเดือน เพื่อนำเสนอที่ประชุม อบต. และวางแผนงบประมาณ</p></div>
+            <div class="uc-block pain"><div class="uc-block-label label-pain">Pain Point ที่แก้</div><p>รวบรวมตัวเลขรายได้ใช้เวลาหลายวัน ข้อมูลไม่ตรงกันระหว่างการเงินกับหน่วยงานสนาม รายงานล่าช้า</p></div>
+            <div class="uc-block kpi"><div class="uc-block-label label-kpi">KPI</div><p>รายงานรายได้พร้อมใช้ภายใน 1 วันหลังปิดรอบ | ความแม่นยำข้อมูลรายได้ ≥ 99% เทียบกับยอดเก็บจริง</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pain Summary -->
+      <section id="pain-summary">
+        <div class="section-header">
+          <div class="section-icon">⚠️</div>
+          <h2>สรุป Pain Points ระดับองค์กร</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="pain-table">
+            <thead>
+              <tr>
+                <th>หมวด</th>
+                <th>ปัญหาเดิม</th>
+                <th>ระบบแก้อย่างไร</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>ข้อมูล</td><td class="old">ทะเบียนครัวเรือนกระจัดกระจาย ค้นหายาก ข้อมูลไม่เป็นปัจจุบัน</td><td class="new">ฐานข้อมูลรวมศูนย์ ค้นหาได้ทันที อัปเดต real-time</td></tr>
+              <tr><td>การลงพื้นที่</td><td class="old">จดสมุด → คีย์ซ้ำที่สำนักงาน ล่าช้า ผิดพลาด</td><td class="new">บันทึกหน้างานผ่านแอป ลดขั้นตอนซ้ำ</td></tr>
+              <tr><td>การคำนวณ</td><td class="old">คิดค่าน้ำขั้นบันได/ค่าขยะด้วยมือ ผิดพลาดบ่อย</td><td class="new">คำนวณอัตโนมัติตามอัตราที่กำหนด</td></tr>
+              <tr><td>การเก็บเงิน</td><td class="old">ช่องทางเดียว (เงินสดหน้างาน) ติดตามยาก</td><td class="new">เงินสด + QR ทั้งหน้างาน สำนักงาน และออนไลน์</td></tr>
+              <tr><td>การติดตาม</td><td class="old">ไม่รู้ความคืบหน้าจนกว่าสิ้นเดือน</td><td class="new">แดชบอร์ด real-time แยกหมู่บ้าน</td></tr>
+              <tr><td>ความโปร่งใส</td><td class="old">ประชาชนไม่ทราบยอดค้าง/ประวัติ</td><td class="new">พอร์ทัลครัวเรือน ดูบิลและชำระได้เอง</td></tr>
+              <tr><td>การรายงาน</td><td class="old">รวบรวมตัวเลขด้วยมือ ใช้เวลานาน</td><td class="new">รายงานอัตโนมัติ แยกค่าน้ำ/ขยะ/หมู่บ้าน</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- KPI Summary -->
+      <section id="kpi-summary">
+        <div class="section-header">
+          <div class="section-icon">📊</div>
+          <h2>KPI รวมระดับองค์กร</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="kpi-table">
+            <thead>
+              <tr>
+                <th>ตัวชี้วัด</th>
+                <th>เป้าหมาย</th>
+                <th>ความหมายทางธุรกิจ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>อัตราเก็บเงินได้ (Collection Rate)</td><td>≥ 85–90% ต่อรอบเดือน</td><td>รายได้ อบต. เข้างบได้ครบและทันเวลา</td></tr>
+              <tr><td>ความคืบหน้าการลงพื้นที่ (Survey Completion)</td><td>≥ 90% ภายในสิ้นเดือน</td><td>ครัวเรือนถูกจดมิเตอร์ครบ ไม่พลาดรายได้</td></tr>
+              <tr><td>สัดส่วนชำระดิจิทัล (QR/Online)</td><td>≥ 20–30%</td><td>ลดภาระเงินสด ลดความเสี่ยงทุจริต</td></tr>
+              <tr><td>เวลาปิดรอบเก็บเงิน</td><td>ลดลง 5–7 วัน</td><td>นำเงินเข้างบและรายงานผู้บริหารได้เร็วขึ้น</td></tr>
+              <tr><td>อัตราข้อผิดพลาดบิล</td><td>0%</td><td>ลดข้อพิพาทและสร้างความเชื่อมั่น</td></tr>
+              <tr><td>ครัวเรือนลงทะเบียนในระบบ</td><td>≥ 95%</td><td>ฐานข้อมูลครบ รองรับการขยายบริการ</td></tr>
+              <tr><td>การใช้พอร์ทัลประชาชน</td><td>≥ 50% ภายใน 1 ปี</td><td>ประชาชนเข้าถึงบริการดิจิทัล ลดภาระสำนักงาน</td></tr>
+              <tr><td>รายได้ค่าน้ำ vs ค่าขยะ</td><td>แยกวัดได้รายเดือน</td><td>วางแผนงบประมาณบำรุงรักษาระบบน้ำ/ขยะ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Diagram -->
+      <section id="diagram">
+        <div class="section-header">
+          <div class="section-icon">🗺️</div>
+          <h2>แผนภาพ Actor ↔ Use Case</h2>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">
+flowchart TB
+    subgraph Actors
+        SA["🔑 Super Admin"]
+        AD["🏛️ Admin ตำบล"]
+        ST["💼 Staff สำนักงาน"]
+        FS["📱 Staff ภาคสนาม"]
+        HH["🏠 ประชาชน/ครัวเรือน"]
+    end
+
+    subgraph CoreUC["กระบวนการหลัก"]
+        UC01["UC-01 จัดการองค์กร"]
+        UC02["UC-02 จัดการผู้ใช้"]
+        UC03["UC-03/04 ตั้งอัตราค่าบริการ"]
+        UC05["UC-05 จัดการหมู่บ้าน"]
+        UC06["UC-06/07 ลงทะเบียนครัวเรือน"]
+        UC08["UC-08 ลงพื้นที่จดมิเตอร์"]
+        UC09["UC-09 ออกใบแจ้งหนี้"]
+        UC10["UC-10/11/12 รับชำระเงิน"]
+        UC13["UC-13 พิมพ์ใบเสร็จ"]
+        UC14["UC-14 ติดตามความคืบหน้า"]
+        UC15["UC-15 ดูยอดค้าง/ประวัติ"]
+        UC16["UC-16 รายงานรายได้"]
+    end
+
+    SA --> UC01
+    SA --> UC02
+    AD --> UC02
+    AD --> UC03
+    AD --> UC05
+    AD --> UC06
+    AD --> UC14
+    AD --> UC16
+    ST --> UC03
+    ST --> UC05
+    ST --> UC06
+    ST --> UC11
+    ST --> UC14
+    ST --> UC16
+    FS --> UC08
+    FS --> UC10
+    FS --> UC13
+    HH --> UC12
+    HH --> UC15
+    UC08 --> UC09
+    UC09 --> UC10
+    UC09 --> UC11
+    UC09 --> UC12
+          </pre>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <strong>Capstone Project</strong> — ระบบจัดเก็บค่าน้ำและค่าขยะ อบต./เทศบาล<br>
+    Business Use Cases Document &nbsp;|&nbsp; Generated for local government digital transformation
+  </footer>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#e8f1f8',
+        primaryTextColor: '#0f4c81',
+        primaryBorderColor: '#0f4c81',
+        lineColor: '#64748b',
+        secondaryColor: '#ecfdf5',
+        tertiaryColor: '#f8fafc',
+        fontFamily: 'IBM Plex Sans Thai, sans-serif'
+      },
+      flowchart: { curve: 'basis', padding: 16 }
+    });
+  </script>
+</body>
+</html>

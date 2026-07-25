@@ -1,0 +1,66 @@
+services:
+  # 1. Backend API Service (Go Gin) - รันในรูปแบบ Docker Web Service
+  - type: web
+    name: capstone-backend
+    runtime: docker
+    repo: https://github.com/JC-2547/capstone-project # ⚠️ เปลี่ยนให้ตรงกับ GitHub ของคุณ
+    region: oregon
+    plan: free
+    dockercontext: ./Backend
+    dockerfilePath: ./Backend/Dockerfile
+    envVars:
+      - key: JWT_SECRET_KEY
+        generateValue: true # ให้ Render สุ่มรหัสลับยาวๆ ให้เองอัตโนมัติ ปลอดภัยกว่า
+      - key: JWT_EXPIRATION_DURATION
+        value: 24h
+      - key: OMISE_PUBLIC_KEY
+        sync: true # บังคับให้คุณต้องไปกรอกค่านี้บนหน้าเว็บหลังกดสร้าง
+      - key: OMISE_SECRET_KEY
+        sync: true
+      - key: OMISE_WEBHOOK_SECRET
+        sync: true
+      # เชื่อมโยง Environment ตัวแปร DB อัตโนมัติจากฐานข้อมูลก้อนด้านล่าง
+      - key: DB_HOST
+        fromDatabase:
+          name: capstone-postgres
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USER
+        fromDatabase:
+          name: capstone-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: capstone-postgres
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: capstone-postgres
+          property: database
+      - key: DB_SSLMODE
+        value: disable
+
+  # 2. Frontend Web Service (Next.js)
+  - type: web
+    name: capstone-frontend
+    runtime: docker
+    repo: https://github.com/JC-2547/capstone-project # ⚠️ เปลี่ยนให้ตรงกับ GitHub ของคุณ
+    region: oregon
+    plan: free
+    dockercontext: ./Frontend/my-app
+    dockerfilePath: ./Frontend/my-app/Dockerfile
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: capstone-backend
+          property: url
+        # ตัวแปรนี้จะกลายเป็น https://capstone-backend.onrender.com/api อัตโนมัติ
+
+# 3. PostgreSQL Database Service
+databases:
+  - name: capstone-postgres
+    databaseName: capstone_db
+    user: capstone_user
+    plan: free
+    region: oregon
